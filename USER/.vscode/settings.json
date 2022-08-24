@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "includes.h": "c",
+        "os_control.h": "c",
+        "tftlcd.h": "c",
+        "icon.h": "c"
+    }
+}

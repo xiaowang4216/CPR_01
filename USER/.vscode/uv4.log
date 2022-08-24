@@ -1,0 +1,59 @@
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'E:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'my_pro'
+compiling gui_public.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\gui_public.c: 1 warning, 0 errors
+compiling about.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\about.c: 1 warning, 0 errors
+compiling main_menu.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\main_menu.c: 1 warning, 0 errors
+compiling alarm_log.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\alarm_log.c: 1 warning, 0 errors
+compiling date_tr.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\date_tr.c: 1 warning, 0 errors
+compiling display.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\display.c: 1 warning, 0 errors
+compiling servic.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\servic.c: 1 warning, 0 errors
+compiling setting.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\setting.c: 1 warning, 0 errors
+compiling set_menu.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\set_menu.c: 1 warning, 0 errors
+compiling icon.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\icon.c: 1 warning, 0 errors
+compiling time.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\GUI\Src\time.c: 1 warning, 0 errors
+compiling log.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\HARDWARE\LOG\log.c: 1 warning, 0 errors
+compiling os_control.c...
+..\GUI\Inc\gui_public.h(84): warning:  #375-D: declaration requires a typedef name
+  };
+..\UCOSIII\uCOS-CONTROL\os_control.c: 1 warning, 0 errors
+linking...
+Program Size: Code=241944 RO-data=364392 RW-data=3484 ZI-data=1111796  
+FromELF: creating hex file...
+"..\OBJ\my_pro.axf" - 0 Error(s), 13 Warning(s).
+Build Time Elapsed:  00:00:18

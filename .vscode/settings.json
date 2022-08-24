@@ -1,0 +1,21 @@
+{
+    "files.associations": {
+        "log.h": "c",
+        "alarm_log.h": "c",
+        "includes.h": "c",
+        "bsp.h": "c",
+        "os_control.h": "c",
+        "gui_public.h": "c",
+        "lcd.h": "c",
+        "set_menu.h": "c",
+        "display.h": "c",
+        "main_menu.h": "c",
+        "malloc.h": "c",
+        "servic.h": "c",
+        "time.h": "c",
+        "w25qxx.h": "c",
+        "sys.h": "c",
+        "stm32f4xx.h": "c",
+        "adc.h": "c"
+    }
+}
