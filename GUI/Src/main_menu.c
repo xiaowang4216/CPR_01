@@ -3,11 +3,13 @@
 #include "set_menu.h"
 #include "icon.h"
 //深度数值
-int depth_val = 45;
+int     depth_val  = 45;
 //模式选择
-int mode_sec = 0;
+int     mode_sec   = 0;
 //电机控制状态
-uint8_t motor_sta = 0;
+uint8_t motor_sta  = 0;
+
+extern  u8 first_rst_flag; //是否能成功复位的标志
 
 
 /*
@@ -123,8 +125,8 @@ void _cbdepth_modle(WM_MESSAGE* pMsg)
 			_PaintFrame();
 			_PaintFrameSta();		
 			GUI_SetFont(&GUI_FontHZ32);
-			GUI_DispStringHCenterAt("深度", 70, 70 + MAIN_TITLE_HEIGHT);
-            GUI_DispStringHCenterAt("模式", 70, 170 + MAIN_TITLE_HEIGHT);
+			GUI_DispStringHCenterAt("深度", 70, 70 + MAIN_TITLE_HEIGHT);			
+            GUI_DispStringHCenterAt("模式", 70, 170 + MAIN_TITLE_HEIGHT);			
             GUI_DispDecAt(depth_val,320,80 + MAIN_TITLE_HEIGHT,2);
             GUI_DispStringHCenterAt(_get_mode(), 330, 180 + MAIN_TITLE_HEIGHT);
 			if((motor_sta == 1)||(motor_sta == 2))
@@ -135,6 +137,8 @@ void _cbdepth_modle(WM_MESSAGE* pMsg)
 				GUI_DispDecAt(min,330,250 + MAIN_TITLE_HEIGHT,2);
 				GUI_DispDecAt(sec,370,250 + MAIN_TITLE_HEIGHT,2);
 			}
+			GUI_SetFont(&GUI_FontHZ24);
+			GUI_DispStringHCenterAt("(mm)", 70, 102 + MAIN_TITLE_HEIGHT);
 			break;
 		/* 定时器更新 */
 		case WM_TIMER:	
@@ -228,7 +232,7 @@ void _cbdepth_modle(WM_MESSAGE* pMsg)
 					case WM_NOTIFICATION_CLICKED:
 						break;
 					case WM_NOTIFICATION_RELEASED:
-						if(motor_sta == 0)//如果是在停止状态
+						if(motor_sta == 0 && first_rst_flag)//如果是在停止状态,并且可以复位成功
 						{
 							BUTTON_Delete(hbutton[0]);
 							BUTTON_Delete(hbutton[1]);
@@ -238,7 +242,7 @@ void _cbdepth_modle(WM_MESSAGE* pMsg)
 							motor_sta = 1;//开始运行
 							_DeleteFrame();   
 							_CreateFrame(&_cbdepth_modle);
-							change_warn("正在运行",3);
+							change_warn("开始CPR",3);
 						}
 						else if(motor_sta == 1)//如果是在运行状态
 						{
@@ -247,7 +251,7 @@ void _cbdepth_modle(WM_MESSAGE* pMsg)
 							_DeleteFrame();   
 							_CreateFrame(&_cbdepth_modle);
 						}
-						else
+						else if(motor_sta == 2)//如果是在暂停状态
 						{
 							motor_sta = 1;//继续运行
 							_DeleteFrame();   
@@ -268,8 +272,6 @@ void _cbdepth_modle(WM_MESSAGE* pMsg)
 							motor_sta = 0;//停止运行
 							min = 0;
 							sec = 0;
-							mode_sec = 0;
-							depth_val = 0;
 							_DeleteFrame();   						
 							_CreateFrame(&_cbdepth_modle);
 						}						
