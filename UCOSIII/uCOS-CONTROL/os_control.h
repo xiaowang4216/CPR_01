@@ -7,7 +7,7 @@
 
 void  App_Printf(CPU_CHAR *format, ...);
 
-
+void my_system_init(void);
 #endif
 
 
