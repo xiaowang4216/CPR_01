@@ -339,7 +339,7 @@
               <MiscControls>--diag_suppress=1035,1294</MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER,USE_USB_OTG_FS,__FPU_PRESENT = 1,__FPU_USED=1,ARM_MATH_CM4,__CC_ARM</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\STM32F4xx_StdPeriph_Driver\inc;..\USER;..\HARDWARE\IIC;..\HARDWARE\LCD;..\HARDWARE\LED;..\HARDWARE\SRAM;..\HARDWARE\TIMER;..\HARDWARE\24CXX;..\HARDWARE\SPI;..\HARDWARE\KEY;..\HARDWARE\SDIO;..\HARDWARE\TOUCH;..\HARDWARE\W25QXX;..\HARDWARE\ADC;..\HARDWARE\RTC;..\TEXT;..\FATFS\src;..\FATFS\exfuns;..\MALLOC;..\FWLIB\CMSIS\Include;..\EMWIN\STemWin\Config;..\EMWIN\STemWin\inc;..\EMWIN\Demo;..\UCOSIII\uC-CPU;..\UCOSIII\uC-LIB;..\UCOSIII\uCOS-III;..\UCOSIII\UCOS_BSP;..\UCOSIII\uCOS_CONFIG;..\UCOSIII\uCOS-III\Source;..\UCOSIII\uC-CPU\ARM-Cortex-M4\RealView;..\UCOSIII\uC-LIB\Ports\ARM-Cortex-M4\RealView;..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView;..\UCOSIII\uCOS-CONTROL;..\EMWIN\STemWinHZ;..\XMRAM;..\USB\USB_APP;..\USB\STM32_USB_OTG_Driver\inc;..\USB\STM32_USB_HOST_Library\Core\inc;..\USB\STM32_USB_HOST_Library\Class\MSC\inc;..\GUI\Inc;..\HARDWARE\LOG;..\HARDWARE\TFTLCD;..\HARDWARE\PWM</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\usart;..\FWLIB\STM32F4xx_StdPeriph_Driver\inc;..\USER;..\HARDWARE\IIC;..\HARDWARE\LCD;..\HARDWARE\LED;..\HARDWARE\KEY;..\HARDWARE\SPI;..\HARDWARE\ADC;..\HARDWARE\RTC;..\HARDWARE\LOG;..\HARDWARE\PWM;..\HARDWARE\SRAM;..\HARDWARE\SDIO;..\HARDWARE\TIMER;..\HARDWARE\24CXX;..\HARDWARE\TFTLCD;..\HARDWARE\TOUCH;..\HARDWARE\MOTOR;..\HARDWARE\W25QXX;..\TEXT;..\FATFS\src;..\FATFS\exfuns;..\MALLOC;..\EMWIN\STemWinHZ;..\EMWIN\Demo;..\FWLIB\CMSIS\Include;..\EMWIN\STemWin\inc;..\EMWIN\STemWin\Config;..\UCOSIII\uC-CPU;..\UCOSIII\uC-LIB;..\UCOSIII\uCOS-III;..\UCOSIII\UCOS_BSP;..\UCOSIII\uCOS_CONFIG;..\UCOSIII\uCOS-III\Source;..\UCOSIII\uCOS-CONTROL;..\UCOSIII\uC-CPU\ARM-Cortex-M4\RealView;..\UCOSIII\uC-LIB\Ports\ARM-Cortex-M4\RealView;..\UCOSIII\uCOS-III\Ports\ARM-Cortex-M4\Generic\RealView;..\XMRAM;..\USB\USB_APP;..\USB\STM32_USB_OTG_Driver\inc;..\USB\STM32_USB_HOST_Library\Core\inc;..\USB\STM32_USB_HOST_Library\Class\MSC\inc;..\GUI\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -562,6 +562,11 @@
               <FileName>pwm.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\PWM\pwm.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\MOTOR\motor.c</FilePath>
             </File>
           </Files>
         </Group>
