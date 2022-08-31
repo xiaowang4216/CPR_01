@@ -1,8 +1,21 @@
-#include "time.h"
+/**************************************************
+	* @File Name: time.c
+	* @brief GUI时间设置界面
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
+#include "EmWinHZFont.h"
 #include "rtc.h"
 #include "set_menu.h"
-#include "EmWinHZFont.h"
+#include "time.h"
 
+/**************************************************
+	* 
+	* @brief 按钮ID宏定义
+	* 
+***************************************************/
 #define ID_YEAR_ADD_BUTTON    (GUI_ID_USER + 0x00)
 #define ID_YEAR_DEC_BUTTON    (GUI_ID_USER + 0x01)
 #define ID_MONTH_ADD_BUTTON   (GUI_ID_USER + 0x02)
@@ -16,13 +29,21 @@
 #define ID_TIME_BACK_BUTTON   (GUI_ID_USER + 0x10)
 #define ID_TIME_SAVE_BUTTON   (GUI_ID_USER + 0x11)
 
+/**************************************************
+	* 
+	* @brief 变量定义
+	* 
+***************************************************/
+RTC_TimeTypeDef  RTC_TimeStructure;      /* 当前时分秒存储 */
+RTC_DateTypeDef  RTC_DateStructure;      /* 当前年月日存储 */
+RTC_TimeTypeDef  RTC_TimeStructure_Temp; /* 时分秒设置中间变量 */
+RTC_DateTypeDef  RTC_DateStructure_Temp; /* 年月日设置中间变量 */
 
-RTC_TimeTypeDef  RTC_TimeStructure;
-RTC_DateTypeDef  RTC_DateStructure;
-
-RTC_TimeTypeDef  RTC_TimeStructure_Temp;
-RTC_DateTypeDef  RTC_DateStructure_Temp;
-
+/**************************************************
+	* 
+	* @brief 静态数组,存储闰年月份天数
+	* 
+***************************************************/
 static int month_day [12] = {31,28,31,30,31,30,31,31,30,31,30,31};
 
 /*

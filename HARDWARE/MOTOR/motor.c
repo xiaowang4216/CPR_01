@@ -19,6 +19,12 @@
 //DRIVER_OE    PA6 (DCMI_D7)
 //STEP_PULSE   PC7 (TIM8_CH2  DCMI_D1)
 ******************************************/
+
+/**************************************************
+	* 
+	* @brief 变量定义
+	* 
+***************************************************/
 u8       first_rst_flag = 1; //是否能成功复位的标志
 u8       rcr_remainder;      //重复计数余数部分
 u8       is_rcr_finish  = 1; //重复计数器是否设置完成
@@ -368,3 +374,52 @@ void ctr_driver(uint8_t mode)
 			break;
 	}
 }
+
+/**************************************************
+	* 
+	* @brief 用于检查按压是否正常
+	* @return uint8_t: 0(正常),-1(异常)
+	* 
+***************************************************/
+int8_t check_press(void)
+{
+	uint8_t  depth_temp = 30;
+	uint16_t adcx;
+	count = 7;
+	Locate_Rle(400 * depth_temp,1500,CW);                 //顺时针下降30mm
+	while(count);                                         //等待运动完成
+	adcx = Get_Adc_Average(3,ADC_Channel_4,20);           //获取ADC3通道4的转换值，20次取平均
+	if(adcx<650 || adcx>850)                              //运动完不在区间范围内,认为按压异常
+	{
+		return -1;                                        
+	}
+	return 0;
+}
+
+/**************************************************
+	* 
+	* @brief 检查传动是否正常
+	* @return uint8_t: 0(正常),-1(传动异常)
+	* 
+***************************************************/
+int8_t check_driver(void)
+{
+	uint8_t  depth_temp = 30;
+	uint16_t adcx;
+	uint16_t adcx_temp;
+	count = 7;
+	adcx = Get_Adc_Average(3,ADC_Channel_4,20);           //获取ADC3通道4的转换值，20次取平均
+	Locate_Rle(400 * depth_temp,1500,CW);                 //顺时针下降30mm
+	while(count);                                         //等待运动完成
+	adcx_temp = Get_Adc_Average(3,ADC_Channel_4,20);      //获取ADC3通道4的转换值，20次取平均
+	adcx = adcx_temp - adcx;                              //运动后的电压减去运动前的电压
+	if(adcx < 200)                                        //差值太小,认为传动异常
+	{
+		return -1;
+	}
+	return 0;
+}
+
+
+
+

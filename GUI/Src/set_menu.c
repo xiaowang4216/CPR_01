@@ -1,20 +1,21 @@
-#include "set_menu.h"
-
+/**************************************************
+	* @File Name: set_menu.c
+	* @brief GUI设置界面
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
+#include "about.h"
+#include "alarm_log.h"
+#include "date_tr.h"
+#include "icon.h"
 #include "main_menu.h"
-
+#include "set_menu.h"
+#include "setting.h"
+#include "servic.h"
 #include "time.h"
 
-#include "date_tr.h"
-
-#include "setting.h"
-
-#include "alarm_log.h"
-
-#include "about.h"
-
-#include "servic.h"
-
-#include "icon.h"
 /*
 *********************************************************************************************************
 *	函 数 名: _cbsystem_menu

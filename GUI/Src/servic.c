@@ -1,16 +1,19 @@
+/**************************************************
+	* @File Name: servic.c
+	* @brief GUI界面服务功能
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
+#include "exfuns.h"
+#include "fattester.h"
+#include "ff.h"
+#include "malloc.h"
+#include "os_control.h"
 #include "servic.h"
-
 #include "set_menu.h"
 
-#include "os_control.h"
-
-#include "ff.h"
-
-#include "exfuns.h"
-
-#include "fattester.h"
-
-#include "malloc.h"
 /***
  * 打开此页面,显示密码框
  * 显示键盘
@@ -65,20 +68,24 @@
 #define NUMPAD_BUTTON_DIST_Y      7
 
 
-int          _PIN_Digits;
-//默认密码
-char         password[6] = "123456";
-//键盘采集密码
-char         in_password[6];
-//修改密码临时变量
-char         temp_password[6];
-//密码输入提示索引
-int          PWD_SELECT = 0;
-
+/**************************************************
+	* 
+	* @brief 变量定义 
+	* 
+***************************************************/
+int          _PIN_Digits;             /* 当前输入的密码位置 */
+char         password[6] = "123456";  /* 默认密码 */
+char         in_password[6];          /* 键盘采集密码 */
+char         temp_password[6];        /* 修改密码临时变量 */
+int          PWD_SELECT = 0;          /* 密码输入提示索引 */
 static FIL   pwd_file;
 /* 将密码保存到外部FLASH,该变量保存文件路径及文件名 */
 const TCHAR* pwd_pname = "1:pwd.txt";
-//静态变量
+/**************************************************
+	* 
+	* @brief 静态变量
+	* 
+***************************************************/
 static const char *_pwd_hint[][1] = {
 	{"旧密码"},
 	{"新密码"},

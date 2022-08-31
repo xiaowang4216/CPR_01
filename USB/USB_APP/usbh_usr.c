@@ -1,48 +1,52 @@
-#include "usbh_usr.h" 
-#include "led.h"
-#include "ff.h" 
-#include "usart.h" 
-#include "fattester.h"
-#include "includes.h"
+/**************************************************
+	* @File Name: usbh_usr.c
+	* @brief USB-USR代码
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
 #include "delay.h"
 #include "exfuns.h"
-#include "tftlcd.h"
+#include "fattester.h"
+#include "ff.h" 
+#include "includes.h"
+#include "led.h"
 #include "log.h"
-
-
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32F407开发板
-//USBH-USR 代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2014/7/22
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2009-2019
-//All rights reserved									  
-//*******************************************************************************
-//修改信息
-//无
-////////////////////////////////////////////////////////////////////////////////// 	   
+#include "usart.h" 
+#include "tftlcd.h"
+#include "usbh_usr.h" 
+ 
 
 /* 当U盘就绪时,将此flag置一,复制sd卡下的日志文件到U盘 */
-u8                          copy_sd_data_to_u = 0;
-
-static u8                   AppState;
-/* U盘的状态,1就绪,0拔出 */
-extern int                  U_DISK_READY;
+/**************************************************
+	* 
+	* @brief 变量定义
+	* 
+***************************************************/
+u8                          copy_sd_data_to_u = 0;/* 当U盘就绪时,此flag置一,开始复制文件到U盘 */
+static u8                   AppState;             /* 获取当前U盘的状态 */
+extern int                  U_DISK_READY;         /* 获取U盘的状态 */
 extern USB_OTG_CORE_HANDLE  USB_OTG_Core;
 
-//USB OTG 中断服务函数
-//处理所有USB中断
+
+/**************************************************
+	* 
+	* @brief USB OTG中断服务函数
+	* 
+***************************************************/
 void OTG_FS_IRQHandler(void)
 {
 	OSIntEnter();
   	USBH_OTG_ISR_Handler(&USB_OTG_Core);
 	OSIntExit(); 
 } 
-//USB HOST 用户回调函数.
+
+/**************************************************
+	* 
+	* @brief USB HOST 用户回调函数
+	* 
+***************************************************/
 USBH_Usr_cb_TypeDef USR_cb=
 {
 	USBH_USR_Init,
@@ -64,10 +68,17 @@ USBH_Usr_cb_TypeDef USR_cb=
 	USBH_USR_DeviceNotSupported,
 	USBH_USR_UnrecoveredError
 };
-/////////////////////////////////////////////////////////////////////////////////
-//以下为各回调函数实现.
+/**************************************************
+	* 
+	* @brief 下面为回调函数实现
+	* 
+***************************************************/
 
-//USB HOST 初始化 
+/**************************************************
+	* 
+	* @brief USB HOST 初始化
+	* 
+***************************************************/
 void USBH_USR_Init(void)
 {
 	printf("USB OTG HS MSC Host\r\n");
@@ -75,25 +86,45 @@ void USBH_USR_Init(void)
 	printf("  USB Host Library v2.1.0\r\n\r\n");
 	
 }
-//检测到U盘插入
+
+/**************************************************
+	* 
+	* @brief U盘插入检测
+	* 
+***************************************************/
 void USBH_USR_DeviceAttached(void)//U盘插入
 {
 	U_DISK_READY=1;
 	printf("检测到USB设备插入!\r\n");
 }
-//检测到U盘拔出
+
+/**************************************************
+	* 
+	* @brief U盘拔出检测
+	* 
+***************************************************/
 void USBH_USR_DeviceDisconnected (void)//U盘移除
 {
 	U_DISK_READY=0;
 	printf("USB设备拔出!\r\n");
 }  
-//复位从机
+
+/**************************************************
+	* 
+	* @brief U盘复位
+	* 
+***************************************************/
 void USBH_USR_ResetDevice(void)
 {
 	printf("复位设备...\r\n");
 }
-//检测到从机速度
-//DeviceSpeed:从机速度(0,1,2 / 其他)
+
+/**************************************************
+	* 
+	* @brief 检测从机速度
+	* @param  DeviceSpeed: 从机速度(0,1,2,其他)
+	* 
+***************************************************/
 void USBH_USR_DeviceSpeedDetected(uint8_t DeviceSpeed)
 {
 	if(DeviceSpeed==HPRT0_PRTSPD_HIGH_SPEED)
@@ -113,8 +144,13 @@ void USBH_USR_DeviceSpeedDetected(uint8_t DeviceSpeed)
 		printf("设备错误!\r\n");  
 	}
 }
-//检测到从机的描述符
-//DeviceDesc:设备描述符指针
+
+/**************************************************
+	* 
+	* @brief 检测到从机的描述符
+	* @param  DeviceDesc: 设备描述符指针
+	* 
+***************************************************/
 void USBH_USR_Device_DescAvailable(void *DeviceDesc)
 { 
 	USBH_DevDesc_TypeDef *hs;
@@ -122,11 +158,17 @@ void USBH_USR_Device_DescAvailable(void *DeviceDesc)
 	printf("VID: %04Xh\r\n" , (uint32_t)(*hs).idVendor); 
 	printf("PID: %04Xh\r\n" , (uint32_t)(*hs).idProduct); 
 }
-//从机地址分配成功
+
+/**************************************************
+	* 
+	* @brief 从机分配地址成功
+	* 
+***************************************************/
 void USBH_USR_DeviceAddressAssigned(void)
 {
 	printf("从机地址分配成功!\r\n");   
 }
+
 //配置描述符获有效
 void USBH_USR_Configuration_DescAvailable(USBH_CfgDesc_TypeDef * cfgDesc,
                                           USBH_InterfaceDesc_TypeDef *itfDesc,

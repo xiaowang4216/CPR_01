@@ -1,14 +1,26 @@
+/**************************************************
+	* @File Name: display.c
+	* @brief GUI界面的入口
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
+#include "delay.h"
 #include "display.h"
 #include "gui_public.h"
-#include "main_menu.h"
-#include "status.h"
-#include "time.h"
-#include "rtc.h"
-#include "tftlcd.h"
-#include "delay.h"
 #include "includes.h"
+#include "main_menu.h"
+#include "rtc.h"
+#include "status.h"
+#include "tftlcd.h"
+#include "time.h"
 
-
+/**************************************************
+	* 
+	* @brief 变量定义
+	* 
+***************************************************/
 extern RTC_TimeTypeDef  RTC_TimeStructure;
 extern RTC_DateTypeDef  RTC_DateStructure;
 /*

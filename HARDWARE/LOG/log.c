@@ -1,7 +1,16 @@
-#include "log.h"
+/**************************************************
+	* @File Name: log.c
+	* @brief 报警日志相关操作
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
 #include "alarm_log.h"
-#include "os_control.h"
+#include "log.h"
 #include "malloc.h"
+#include "os_control.h"
+
 /***
  * 当系统发生问题时
  * 打开SD卡文件夹,检查文件是否存在
@@ -19,21 +28,22 @@
  * 开始将数据从SD卡向U盘备份
  ***/
 
+
 //默认日志打印路径
-const TCHAR* log_pathn = "0:LOG";
-//默认日志打印路径文件
-const TCHAR* log_pname = "0:LOG/log.txt";
-//数据复制U盘路径
-u8  ulog_pname[20];
-//sd卡文件
-static FIL sd_file;	  	
-//U盘文件
-static FIL ud_file;	
-//时间结构体
+/**************************************************
+	* 
+	* @brief 变量定义
+	* 
+***************************************************/
+const TCHAR* log_pathn = "0:LOG";        /* 报警日志存储文件夹 */
+const TCHAR* log_pname = "0:LOG/log.txt";/* 报警日志存储路径 */
+u8  ulog_pname[20];                      /* 数据复制到U盘的路径 */
+static FIL sd_file;	  	                 /* SD卡文件 */
+static FIL ud_file;	                     /* U盘文件 */
 extern RTC_TimeTypeDef  RTC_TimeStructure;
 extern RTC_DateTypeDef  RTC_DateStructure;
-//按压深度
-extern int depth_val;
+extern int depth_val;                    /* 用于获取按压深度 */
+
 /**********************************************************
 *函数功能：打开文件夹，如果文件夹不存在就创建文件夹，存在就关闭
 *输入：	pathn：文件夹名字

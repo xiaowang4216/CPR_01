@@ -1,13 +1,25 @@
-#include "main_menu.h"
+/**************************************************
+	* @File Name: main_menu.c
+	* @brief GUI界面的主菜单
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
+
 #include "gui_public.h"
-#include "set_menu.h"
 #include "icon.h"
-//深度数值
-int     depth_val  = 45;
-//模式选择
-int     mode_sec   = 0;
-//电机控制状态
-uint8_t motor_sta  = 0;
+#include "main_menu.h"
+#include "set_menu.h"
+
+/**************************************************
+	* 
+	* @brief 变量定义
+	* 
+***************************************************/
+int     depth_val  = 45;   /* 用于获取当前的按压深度 */
+int     mode_sec   = 0;    /* 用于获取当前的按压模式 */
+uint8_t motor_sta  = 0;    /* 用于获取当前的电机状态 */
 
 extern  u8 first_rst_flag; //是否能成功复位的标志
 

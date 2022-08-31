@@ -1,21 +1,20 @@
+/**************************************************
+	* @File Name: spi.c
+	* @brief SPI驱动代码
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
 #include "spi.h"
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32F407开发板
-//SPI 驱动代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2014/5/6
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 	 
+	 
 
 
-//以下是SPI模块的初始化代码，配置成主机模式 						  
-//SPI口初始化
-//这里针是对SPI1的初始化
+/**************************************************
+	* 
+	* @brief SPI1初始化,配置为主机模式
+	* 
+***************************************************/
 void SPI1_Init(void)
 {	 
   GPIO_InitTypeDef  GPIO_InitStructure;
@@ -56,10 +55,15 @@ void SPI1_Init(void)
 
 	SPI1_ReadWriteByte(0xff);//启动传输		 
 }   
-//SPI1速度设置函数
-//SpeedSet:0~7
-//SPI速度=fAPB2/2^(SpeedSet+1)
-//fAPB2时钟一般为84Mhz
+
+/**************************************************
+	* 
+	* @brief SPI1速度设置
+	* @param  SPI_BaudRatePrescaler: 
+	* @note  SpeedSet:0~7
+	* SPI速度=fAPB2/2^(SpeedSet+1)
+	* fAPB2时钟一般为84Mhz
+***************************************************/
 void SPI1_SetSpeed(u8 SPI_BaudRatePrescaler)
 {
   	assert_param(IS_SPI_BAUDRATE_PRESCALER(SPI_BaudRatePrescaler));
@@ -70,6 +74,13 @@ void SPI1_SetSpeed(u8 SPI_BaudRatePrescaler)
 //SPI1 读写一个字节
 //TxData:要写入的字节
 //返回值:读取到的字节
+/**************************************************
+	* 
+	* @brief SPI1读写一个字节
+	* @param  TxData: 要写入的字节
+	* @return u8: 读取到的字节
+	* 
+***************************************************/
 u8 SPI1_ReadWriteByte(u8 TxData)
 {		 			 
  

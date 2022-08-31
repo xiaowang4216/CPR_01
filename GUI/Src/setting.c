@@ -1,6 +1,15 @@
-#include "setting.h"
-#include "set_menu.h"
+/**************************************************
+	* @File Name: setting.c
+	* @brief GUI语言及音量设置界面
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
 #include "gui_public.h"
+#include "set_menu.h"
+#include "setting.h"
+
 /***
  * 设置界面
  * 通过此界面设置语言类型
@@ -20,14 +29,20 @@
 #define ID_SETTING_BACK_BUTTON     (GUI_ID_USER + 0x04)
 
 
+/**************************************************
+	* 
+	* @brief 变量定义
+	* 
+***************************************************/
+int LANGUAGE_SELECT = 0;  /* 语言序列号,默认中文 */
+int ALARM_VOLUME    = 0; /* 系统提示音量大小 */
 
-//语言序列号,默认中文
-int LANGUAGE_SELECT = 0;
-//系统提示音量大小
-int ALARM_VOLUME    = 0;
 
-
-//静态数组,语言种类
+/**************************************************
+	* 
+	* @brief 静态数组,语言种类
+	* 
+***************************************************/
 static const char * _language[][1] = {
     {"中文"},
     {"English"},

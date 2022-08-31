@@ -1,23 +1,19 @@
-#include "sys.h" 
+/**************************************************
+	* @File Name: mytext.c
+	* @brief 汉字显示驱动代码 
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
 #include "fontupd.h"
-#include "w25qxx.h"
+#include "mytext.h"
+#include "string.h"	
+#include "sys.h" 
 #include "tftlcd.h"
-#include "mytext.h"	
-#include "string.h"												    
-#include "usart.h"												    
-//////////////////////////////////////////////////////////////////////////////////	 
-//本程序只供学习使用，未经作者许可，不得用于其它任何用途
-//ALIENTEK STM32F407开发板
-//汉字显示 驱动代码	   
-//正点原子@ALIENTEK
-//技术论坛:www.openedv.com
-//创建日期:2014/5/15
-//版本：V1.0
-//版权所有，盗版必究。
-//Copyright(C) 广州市星翼电子科技有限公司 2014-2024
-//All rights reserved									  
-////////////////////////////////////////////////////////////////////////////////// 	 
- 
+#include "usart.h"	
+#include "w25qxx.h"
+												    																												
 //code 字符指针开始
 //从字库中查找出字模
 //code 字符串的开始地址,GBK码

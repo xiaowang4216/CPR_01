@@ -1,6 +1,14 @@
+/**************************************************
+	* @File Name: date_tr.c
+	* @brief 将报警日志文件通过U盘或者蓝牙的方式读取出来
+	* @author 王现刚 (2891854535@qq.com)
+	* @Version : 1.0
+	* @date 2022-08-31
+	* 
+***************************************************/
+#include "alarm_log.h"
 #include "date_tr.h"
 #include "set_menu.h"
-#include "alarm_log.h"
 #include "time.h"
 
 /***
@@ -46,15 +54,21 @@
 //返回上一级菜单
 #define ID_DATE_BACK_BUTTON        (GUI_ID_USER + 0x06)
 
+/**************************************************
+	* 
+	* @brief 变量定义
+	* 
+***************************************************/
+int    U_DISK_READY = 0;              /* 检测U盘插入状态 */
+extern u8           copy_sd_data_to_u;/* 从SD卡复制文件到U盘标志位 */
+extern OS_SEM       AppPrintfSemp;	  /* 用于printf互斥 */
+extern OS_SEM       SEM_SYNCH;	      /* 用于同步 */
 
-//U盘是否插入
-int U_DISK_READY = 0;
-
-
-extern u8           copy_sd_data_to_u;
-extern OS_SEM       AppPrintfSemp;	/* 用于printf互斥 */
-extern OS_SEM       SEM_SYNCH;	    /* 用于同步 */
-
+/**************************************************
+	* 
+	* @brief 函数声明
+	* 
+***************************************************/
 void _cbtrmethod_menu(WM_MESSAGE* pMsg);
 void _cbtrdate(WM_MESSAGE* pMsg);
 
