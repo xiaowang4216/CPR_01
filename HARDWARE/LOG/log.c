@@ -166,6 +166,7 @@ uint8_t write_log_old(uint8_t mode)
  * @param  mode: 要写入的日志
  * 1:电池电量低
  * 2:按压深度调整
+ * 3:复位失败
  * @return uint8_t: 
  * 0:写入成功
  * 1:文件夹创建失败
@@ -201,6 +202,10 @@ uint8_t write_log(uint8_t mode)
 		/* 按压深度有问题 */
 		case 2:
 			sprintf(string_buf,"%s按压深度：%d mm\r\n1\r\n\r\n",string_buf,depth_val);
+			break;
+		/* 复位失败 */
+		case 3:
+			sprintf(string_buf,"%s复位失败\r\n1\r\n\r\n",string_buf);
 			break;
 		default:
 			App_Printf("写入日志的参数错误,请纠正\r\n");
