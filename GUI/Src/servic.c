@@ -9,7 +9,9 @@
 #include "exfuns.h"
 #include "fattester.h"
 #include "ff.h"
+#include "log.h"
 #include "malloc.h"
+#include "motor.h"
 #include "os_control.h"
 #include "servic.h"
 #include "set_menu.h"
@@ -1116,15 +1118,22 @@ void _cbcalib_lvdt(WM_MESSAGE* pMsg)
 							break;
 					}
 					break;
-				case ID_SERVIC_1_BUTTON: //设置按钮的通知代码,打开设置界面
+				case ID_SERVIC_VERIFY_BUTTON: //设置按钮的通知代码,打开设置界面
 					switch(NCode) 
 					{
 						case WM_NOTIFICATION_CLICKED:
 							break;
 						case WM_NOTIFICATION_RELEASED:
-							/* 删除这个创建的界面 */
-                            _DeleteFrame();   
-                            _CreateFrame(&_cbpwd_change);
+							//开始校准传动
+                            if(check_driver() != 0)
+							{
+								change_warn("传动异常",3);
+								write_log(4);
+							}
+							else
+							{
+								change_warn("校准成功",1);
+							}
 							break;
 					}
 					break;
@@ -1158,22 +1167,18 @@ void _cbcalib_depth(WM_MESSAGE* pMsg)
             //创建此页面所需的所有按钮
             GUI_SetFont(&GUI_FontHZ24);
 			_CreateButton_P(hItem, " ",  ID_SERVIC_BACK_BUTTON, 40,  60 + MAIN_TITLE_HEIGHT, 40,  40, 0,&bmback,0);
-			_CreateButton(hItem, "修改密码",    ID_SERVIC_1_BUTTON,      0,   122 + MAIN_TITLE_HEIGHT, 400,  66, 0);
-            _CreateButton(hItem, "位移传感器校准",    ID_SERVIC_2_BUTTON,      0,   188 + MAIN_TITLE_HEIGHT, 400,  66, 0);
-            _CreateButton(hItem, "取消", ID_SERVIC_CANCEL_BUTTON, 400,   122 + MAIN_TITLE_HEIGHT,   80,  66,0) ;
-            _CreateButton(hItem, "按压深度校准",    ID_SERVIC_0_BUTTON,      0,   254 + MAIN_TITLE_HEIGHT,    400,  66, 0);
-            _CreateButton(hItem, "确认", ID_SERVIC_VERIFY_BUTTON, 400,   254 + MAIN_TITLE_HEIGHT, 80,  66, 0);
+            _CreateButton(hItem, "提示:按\"开始\"启动校准", ID_SERVIC_CANCEL_BUTTON, 0,   188 + MAIN_TITLE_HEIGHT,   480,  66,0) ;
+            _CreateButton(hItem, "开始", ID_SERVIC_VERIFY_BUTTON, 0,   254 + MAIN_TITLE_HEIGHT, 480,  66, 0);
 			WM_CreateTimer(hItem, /* 接受信息的窗口的句柄 */
 						   0, 	                     /* 用户定义的Id。如果不对同一窗口使用多个定时器，此值可以设置为零。 */
 						   10,                       /* 周期，此周期过后指定窗口应收到消息*/
 						   0);
 		case WM_PAINT:
-			_PaintFrame();	
-			_PaintFrameSta();
+			_PaintFrame();
+			_PaintFrameSta();		
 			GUI_SetFont(&GUI_FontHZ24);
 		
 			GUI_DispStringHCenterAt("按压深度校准", 230, 70 - MAIN_TITLE_HEIGHT);
-			GUI_DispStringHCenterAt("1/1", 440, 200 + MAIN_TITLE_HEIGHT);
 			break;
 		/* 定时器更新 */
 		case WM_TIMER:			
@@ -1200,15 +1205,22 @@ void _cbcalib_depth(WM_MESSAGE* pMsg)
 							break;
 					}
 					break;
-				case ID_SERVIC_1_BUTTON: //设置按钮的通知代码,打开设置界面
+				case ID_SERVIC_VERIFY_BUTTON: //设置按钮的通知代码,打开设置界面
 					switch(NCode) 
 					{
 						case WM_NOTIFICATION_CLICKED:
 							break;
 						case WM_NOTIFICATION_RELEASED:
-							/* 删除这个创建的界面 */
-                            _DeleteFrame();   
-                            _CreateFrame(&_cbpwd_change);
+							//开始校准传动
+                            if(check_press() != 0)
+							{
+								change_warn("按压异常",3);
+								write_log(5);
+							}
+							else
+							{
+								change_warn("按压校准成功",1);
+							}
 							break;
 					}
 					break;
