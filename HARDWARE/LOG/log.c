@@ -217,6 +217,14 @@ uint8_t write_log(uint8_t mode)
 		case 3:
 			sprintf(string_buf,"%s复位失败\r\n1\r\n\r\n",string_buf);
 			break;
+		/* 传动异常 */
+		case 4:
+			sprintf(string_buf,"%s传动器异常\r\n3\r\n\r\n",string_buf);
+			break;
+		/* 按压异常 */
+		case 5:
+			sprintf(string_buf,"%s按压异常\r\n3\r\n\r\n",string_buf);
+			break;
 		default:
 			App_Printf("写入日志的参数错误,请纠正\r\n");
 			return 2;
