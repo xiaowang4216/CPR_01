@@ -1,33 +1,32 @@
-#include "os_control.h"
-
-#include "sys.h"
-#include "delay.h"
-#include "usart.h"
-#include "sram.h"
-#include "malloc.h"
-#include "tftlcd.h"
-#include "led.h"
-#include "rtc.h"
 #include "adc.h"
-#include "key.h"
-#include "timer.h"
-#include "touch.h"
-#include "mytext.h"
-#include "sdio_sdcard.h"
+#include "delay.h"
+#include "DIALOG.h"
+#include "display.h"
 #include "GUI.h"
-#include "ff.h"
+#include "EmWinHZFont.h"
 #include "exfuns.h"
-#include "w25qxx.h"
+#include "ff.h"
 #include "fontupd.h"
 #include "includes.h"
-#include "EmWinHZFont.h"
-#include "WM.h"
-#include "DIALOG.h"
-#include "usbh_usr.h" 
-#include "main_menu.h"
+#include "key.h"
+#include "led.h"
 #include "log.h"
+#include "main_menu.h"
+#include "malloc.h"
 #include "motor.h"
-#include "display.h"
+#include "mytext.h"
+#include "os_control.h"
+#include "rtc.h"
+#include "sdio_sdcard.h"
+#include "sram.h"
+#include "sys.h"
+#include "tftlcd.h"
+#include "timer.h"
+#include "touch.h"
+#include "usart.h"
+#include "usbh_usr.h" 
+#include "w25qxx.h"
+#include "WM.h"
 
 
 //任务优先级
@@ -505,17 +504,21 @@ static void msgtr_task(void *p_arg)
 *********************************************************************************************************
 */	
 static void motor_task(void *p_arg)
-{
+{	
 	OS_ERR      err;
 	
 	(void)p_arg;
 	
 	while(1)
 	{			
-		if(motor_sta == 1)
+		if(motor_sta == 1)       //运行状态
 		{
 			ctr_driver(mode_sec);
 			OSTimeDlyHMSM(0,0,0,10,OS_OPT_TIME_PERIODIC,&err);
+		}
+		else if(motor_sta == 0 || motor_sta == 2)  //停止或运行状态
+		{
+			get_driver_start(); //获取人工设置的初始位置
 		}
 		else
 		{

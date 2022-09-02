@@ -2,17 +2,20 @@
 	* @File Name: motor.c
 	* @brief 电机控制相关函数定义
 	* @author 王现刚 (2891854535@qq.com)
-	* @Version : 1.0
+	* @Version : 1.2
 	* @date 2022-08-29
-	* 
+	* V1.1 修改复位函数,防止人工干预系统启动是电机的初始位置
+	* V1.2 添加人工设置电机初始位置功能
 ***************************************************/
-#include "includes.h"
-#include "motor.h"
-#include "delay.h"
-#include "usart.h"
 #include "adc.h"
+#include "delay.h"
+#include "tftlcd.h"
+#include "includes.h"
 #include "log.h"
+#include "motor.h"
 #include "os_control.h"
+#include "usart.h"
+
 
 /********** 驱动器 端口定义 **************
 //DRIVER_DIR   PA4 (DCMI_D6)
@@ -32,6 +35,7 @@ long     rcr_integer;	     //重复计数整数部分
 long     target_pos     = 0; //有符号方向
 long     current_pos    = 0; //有符号方向
 DIR_Type motor_dir      = CW;//顺时针
+int      depth_start    = 0; /* 用于获取当前人工设置的起始位置 */
 extern   int      depth_val; /* 用于获取当前的按压深度 */
 extern   uint8_t  motor_sta; /* 用于获取当前的按压状态 */
 
@@ -227,18 +231,20 @@ void Locate_Abs(long num,u32 frequency)                       //绝对定位函数
 	* 
 ***************************************************/
 void rst_driver(void)
-{	
+{
+	static   uint8_t i = 1;
 	u16      adcx;
-	uint16_t rst_count;                                       //复位时间计数
+	uint16_t rst_count = 0;                                   //复位时间计数
 	uint32_t frequency = DRIVER_RST_S;                        //获取设置的电机复位速度
-	adcx=Get_Adc_Average(3,ADC_Channel_4,20);                 //获取ADC3通道4的转换值，20次取平均
-	// 开始复位
+	adcx=Get_Adc_Average(3,ADC_Channel_4,20);                 //获取通道4的转换值，20次取平均
+
 	while(adcx > 5 && first_rst_flag)
 	{
 		rst_count ++;                                         
-		if(rst_count >= 500)               //时间太久,认为复位失败
+		if(rst_count >= 500)                                  //时间超过50s,认为复位失败
 		{
 			write_log(3);                                     //写入复位失败报警日志
+			i = 0;                                            //系统启动复位失败,后面不用管
 			first_rst_flag = 0;                               //复位失败标志,等待机器检修
 			break;
 		}
@@ -250,6 +256,20 @@ void rst_driver(void)
 		rcr_remainder=abs(target_pos-current_pos)%(RCR_VAL+1);//重复计数余数部分
 		is_rcr_finish=0;                                      //重复计数器未设置完成
 		TIM8_Startup(frequency);                              //开启TIM8
+
+	}
+	TIM_CtrlPWMOutputs(TIM8,DISABLE);	                      //MOE 主输出关闭
+	TIM_Cmd(TIM8, DISABLE);                                   //关闭TIM8
+	adcx=Get_Adc_Average(3,ADC_Channel_4,20);                 //获取通道4的转换值，20次取平均
+	
+	while(adcx < 5 && i)                                      //保证系统启动是,电机的复位位置不是人工干预过的
+	{
+		i = 0;
+		count = 7;
+		adcx=Get_Adc_Average(3,ADC_Channel_4,10);             //获取通道4的转换值，20次取平均
+		Locate_Rle(100,frequency,CW);
+		while(count);
+
 	}
 	rcr_integer = 0;
 	rcr_remainder = 0;
@@ -262,6 +282,7 @@ void rst_driver(void)
 	TIM_Cmd(TIM8, DISABLE);                                   //关闭TIM8	
 }
 
+
 /**************************************************
 	* 
 	* @brief 按压一次并回到起点
@@ -271,7 +292,7 @@ void rst_driver(void)
 void press_once(uint32_t fre)
 {
 	count = 7;	
-	Locate_Rle(400 * depth_val,fre,CW); 
+	Locate_Rle(400 * (depth_val+depth_start),fre,CW); 
 	while(count)
 	{				
 		if(motor_sta != 1)
@@ -350,7 +371,7 @@ void press_cont(uint32_t fre)
 void ctr_driver(uint8_t mode)
 {
 	//控制当前的按压速度
-	uint32_t fre = DRIVER_PRESS_FRE *depth_val;
+	uint32_t fre = DRIVER_PRESS_FRE * (depth_val + depth_start);
 //	uint32_t fre = 100 *depth_val;//调试使用速度
 	switch (mode)
 	{
@@ -383,16 +404,35 @@ void ctr_driver(uint8_t mode)
 ***************************************************/
 int8_t check_press(void)
 {
-	uint8_t  depth_temp = 30;
+	uint8_t  drive_exception_count = 0;
+	uint8_t  i;
 	uint16_t adcx;
+	uint16_t adcx_temp;
 	count = 7;
-	Locate_Rle(400 * depth_temp,1500,CW);                 //顺时针下降30mm
+	POINT_COLOR=RED;                                              //设置画笔颜色
+	LCD_ShowString(100,140,380,20,24,"Calibrating, please wait···"); //显示系统正在进行校准
+	rst_driver(); 
+	Locate_Rle(400 * 30,2500,CW);                         //顺时针下降30mm
 	while(count);                                         //等待运动完成
-	adcx = Get_Adc_Average(3,ADC_Channel_4,20);           //获取ADC3通道4的转换值，20次取平均
-	if(adcx<650 || adcx>850)                              //运动完不在区间范围内,认为按压异常
+	for(i = 31;i < 54;i ++)
 	{
-		return -1;                                        
+		count = 7;
+		Locate_Rle(400,1500,CW);                              //顺时针下降1mm
+		while(count);                                         //等待运动完成
+		adcx = Get_Adc_Average(3,ADC_Channel_4,20);           //获取ADC3通道4的转换值，20次取平均
+		adcx_temp = (int)((float)i*26.29f + 9.42f);
+		if(adcx < adcx_temp - 50 || adcx > adcx_temp + 50)    //差值变化不符合规律,传动异常
+		{
+			drive_exception_count += 1;
+			if(drive_exception_count > 5)                     //测试53次,累计异常5次,
+			{
+				rst_driver();                                 //传动异常,终止测试
+				return -1;
+			}			
+		}
 	}
+	//传动正常
+	rst_driver();                                	
 	return 0;
 }
 
@@ -404,22 +444,74 @@ int8_t check_press(void)
 ***************************************************/
 int8_t check_driver(void)
 {
-	uint8_t  depth_temp = 30;
+	uint8_t  drive_exception_count = 0;
+	uint8_t  i;
 	uint16_t adcx;
 	uint16_t adcx_temp;
 	count = 7;
-	adcx = Get_Adc_Average(3,ADC_Channel_4,20);           //获取ADC3通道4的转换值，20次取平均
-	Locate_Rle(400 * depth_temp,1500,CW);                 //顺时针下降30mm
-	while(count);                                         //等待运动完成
-	adcx_temp = Get_Adc_Average(3,ADC_Channel_4,20);      //获取ADC3通道4的转换值，20次取平均
-	adcx = adcx_temp - adcx;                              //运动后的电压减去运动前的电压
-	if(adcx < 200)                                        //差值太小,认为传动异常
+	POINT_COLOR=RED;                                              //设置画笔颜色
+	LCD_ShowString(100,140,380,20,24,"Calibrating, please wait···"); //显示系统正在进行校准
+	rst_driver();                                         //开始检查前先复位  
+	for(i= 1;i < 54;i ++)
 	{
-		return -1;
-	}
+		count = 7;
+		Locate_Rle(400,1500,CW);                              //顺时针下降1mm
+		while(count);                                         //等待运动完成
+		adcx = Get_Adc_Average(3,ADC_Channel_4,20);           //获取ADC3通道4的转换值，20次取平均
+		adcx_temp = (int)((float)i*26.29f + 9.42f);
+		if(adcx < adcx_temp - 50 || adcx > adcx_temp + 50)    //差值变化不符合规律,传动异常
+		{
+			drive_exception_count += 1;
+			if(drive_exception_count > 8)                     //测试53次,累计异常5次,
+			{
+				rst_driver();                             //传动异常,终止测试
+				return -1;
+			}			
+		}
+	}   
+	//传动正常
+	rst_driver();                                	
 	return 0;
 }
 
-
-
+/**************************************************
+	* 
+	* @brief 获取人工设置的电机起始位置
+	* @return uint8_t: 
+	* 
+***************************************************/
+uint8_t get_driver_start(void)
+{
+	u8     start;
+	u16    adcx;
+	u16    adcx_temp;
+	adcx_temp=Get_Adc_Average(3,ADC_Channel_4,20) - 10;//获取通道5的转换值，20次取平均
+	if(adcx_temp > 2000)adcx_temp = 0;                 //防止无符号数跳到最大值
+	if(adcx_temp>15)                                   //检测到电机被拉动
+	{
+		start  = 15;
+		for(;start > 0;start --)                       //循环检测15次,等待数值变化波动变小
+		{
+			adcx = Get_Adc_Average(3,ADC_Channel_4,20);//获取通道4的转换值，20次取平均
+			if(adcx > adcx_temp)
+			{
+				adcx = adcx - adcx_temp;
+				if(adcx>45)break;
+			}
+			else
+			{
+				adcx = adcx_temp -adcx;
+				if(adcx>45)break;
+			}
+			
+		}
+		if(!start)
+		{
+			adcx = Get_Adc_Average(3,ADC_Channel_4,20);//获取通道5的转换值，20次取平均
+			depth_start = (int)((float)adcx + 9.42f)/26.29f; //调用拟合函数获取当前的电机起始位置		
+			App_Printf("当前的起始位置为:%d",depth_start);
+		}			
+	}	
+	return depth_start;
+}
 
