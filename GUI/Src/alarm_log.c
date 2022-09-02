@@ -4,6 +4,7 @@
 	* @author 王现刚 (2891854535@qq.com)
 	* @Version : 1.0
 	* @date 2022-08-31
+	*V1.1 修改日志从最新的一条开始显示
 	* 
 ***************************************************/
 #include "alarm_log.h"
@@ -402,17 +403,25 @@ uint8_t show_log(int i)
 	GUI_SetFont(&GUI_FontHZ24);
 	GUI_SetColor(GUI_BLACK);
 	
-	draw_alarm_log_back(i,j);
+	draw_alarm_log_back(i,j);                                                     //绘制当前所选日志的报警等级背景颜色
 	GUI_DispStringHCenterAt(log_ifo[i].time_ifo, 230, 120 - MAIN_TITLE_HEIGHT);
 	GUI_DispStringHCenterAt(log_ifo[i].warn_ifo, 230, 150 - MAIN_TITLE_HEIGHT);
-	draw_alarm_log_back(i+1,j+1);
-	GUI_DispStringHCenterAt(log_ifo[i +1].time_ifo, 230, 180 - MAIN_TITLE_HEIGHT);
-	GUI_DispStringHCenterAt(log_ifo[i +1].warn_ifo, 230, 210 - MAIN_TITLE_HEIGHT);
-	draw_alarm_log_back(i+2,j+2);
-	GUI_DispStringHCenterAt(log_ifo[i +2].time_ifo, 230, 240 - MAIN_TITLE_HEIGHT);
-	GUI_DispStringHCenterAt(log_ifo[i +2].warn_ifo, 230, 270 - MAIN_TITLE_HEIGHT);
+	if(i >= 1)
+	{
+		draw_alarm_log_back(i-1,j+1);
+		GUI_DispStringHCenterAt(log_ifo[i -1].time_ifo, 230, 180 - MAIN_TITLE_HEIGHT);
+		GUI_DispStringHCenterAt(log_ifo[i -1].warn_ifo, 230, 210 - MAIN_TITLE_HEIGHT);
+	}
+	
+	if(i >=2)
+	{
+		draw_alarm_log_back(i-2,j+2);
+		GUI_DispStringHCenterAt(log_ifo[i -2].time_ifo, 230, 240 - MAIN_TITLE_HEIGHT);
+		GUI_DispStringHCenterAt(log_ifo[i -2].warn_ifo, 230, 270 - MAIN_TITLE_HEIGHT);
+	}
+	
 	/* 显示当前日志文件时第几条 */
-	sprintf(string_buf,"%d%s%d",i+1,"/",log_ifo->total_log);
+	sprintf(string_buf,"%d%s%d",log_ifo->total_log-i,"/",log_ifo->total_log);
 	GUI_DispStringHCenterAt("报警日志", 230, 70 - MAIN_TITLE_HEIGHT);
 	if(log_ifo[i].total_log) GUI_DispStringHCenterAt(string_buf, 440, 200 - MAIN_TITLE_HEIGHT);
 	/* 如果没有日志文件,则不显示 */
@@ -444,6 +453,7 @@ static void draw_alarm_log_sheet(void)
 	GUI_DrawLine(410,110,410,290);
 }
 
+
 /*
 *********************************************************************************************************
 *	函 数 名: _cblogs
@@ -467,6 +477,7 @@ void _cblogs(WM_MESSAGE* pMsg)
             //创建此页面所需的所有按钮
             GUI_SetFont(&GUI_FontHZ24);
 			_get_logs1(0);
+			i = log_ifo->total_log - 1;
 			_CreateButton_P(hItem, " ",     ID_LOG_ADD_BUTTON,      430, 125 + MAIN_TITLE_HEIGHT, 20,  20, 0,&bmup,0);
 			_CreateButton_P(hItem, " ",     ID_LOG_DEC_BUTTON,      430, 250 + MAIN_TITLE_HEIGHT, 20,  20, 0,&bmdown,0);
 			_CreateButton_P(hItem, " ",     ID_LOG_BACK_BUTTON,     40,  60  + MAIN_TITLE_HEIGHT, 40,  40, 0,&bmback,0);
@@ -500,10 +511,10 @@ void _cblogs(WM_MESSAGE* pMsg)
 						case WM_NOTIFICATION_CLICKED:
 							break;
 						case WM_NOTIFICATION_RELEASED: 
-							i = i - 1;
-							if(i < 0)
+							i = i + 1;
+							if(i >= log_ifo->total_log)
 							{
-								i = 0;
+								i = log_ifo->total_log - 1;
 							}
                             WM_InvalidateWindow(hItem);
 							break;	
@@ -515,11 +526,11 @@ void _cblogs(WM_MESSAGE* pMsg)
 					{
 						case WM_NOTIFICATION_CLICKED:
 							break;
-						case WM_NOTIFICATION_RELEASED:
-							i = i + 1;
-							if(i >= log_ifo->total_log)
+						case WM_NOTIFICATION_RELEASED:							
+							i = i - 1;
+							if(i <= 0)
 							{
-								i = log_ifo->total_log - 1;
+								i = 0;
 							}
                             WM_InvalidateWindow(hItem);
 							break;
@@ -544,3 +555,4 @@ void _cblogs(WM_MESSAGE* pMsg)
 		WM_DefaultProc(pMsg);
 	}
 }
+
