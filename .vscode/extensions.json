@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "unbug.codelf",
-        "aooiu.z-reader"
+        "aooiu.z-reader",
+        "vscodevim.vim"
     ]
 }

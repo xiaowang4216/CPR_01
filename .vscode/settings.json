@@ -16,7 +16,20 @@
         "w25qxx.h": "c",
         "sys.h": "c",
         "stm32f4xx.h": "c",
-        "adc.h": "c"
+        "adc.h": "c",
+        "motor.h": "c",
+        "pwm.h": "c",
+        "stdint.h": "c",
+        "emwinhzfont.h": "c",
+        "status.h": "c",
+        "rtc.h": "c",
+        "ff.h": "c",
+        "tftlcd.h": "c",
+        "usart.h": "c",
+        "mytext.h": "c",
+        "usbh_usr.h": "c",
+        "sram.h": "c",
+        "wm.h": "c"
     },
     "C_Cpp.errorSquiggles": "Disabled"
 }
