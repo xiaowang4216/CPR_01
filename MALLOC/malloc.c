@@ -1,6 +1,7 @@
 #include "malloc.h"
 	 
 
+
 //内存池(4字节对齐)
 __align(4) u8 mem1base[MEM1_MAX_SIZE];
 __align(4) u8 mem2base[MEM2_MAX_SIZE] __attribute__((at(0x68000000))); //外部SRAM内存池
